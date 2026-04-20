@@ -52,7 +52,8 @@ export function Login() {
         onSubmit={handleLogin}
         className="bg-white p-6 rounded-xl shadow-md w-full max-w-sm"
       >
-        <h1 className="text-xl font-bold mb-4">Login</h1>
+        <img src="/logo.png" alt="logo" className="h-48 mx-auto" />
+        <h1 className="text-xl font-bold mb-2">Login</h1>
 
         <input
           type="email"
@@ -79,6 +80,10 @@ export function Login() {
         >
           {loading ? "Entrando..." : "Entrar"}
         </button>
+
+        <p className="text-center text-xs mt-6 text-green-600">
+          <a href="#">Esqueceu a Senha? Clique aqui!</a>
+        </p>
       </form>
     </div>
   );
