@@ -1,8 +1,8 @@
 # Design System: The Living Ledger
 
-## Visao geral
+## Visão geral
 
-O design system do CicloCampo traduz a direcao criativa **The Living Ledger** para a implementacao do produto. A interface deve parecer editorial, clara e organica, sem cair nem na rigidez de um painel burocratico nem em uma estetica infantilizada.
+O design system do CicloCampo traduz a direcao criativa **The Living Ledger** para a implementãção do produto. A interface deve parecer editorial, clara e organica, sem cair nem na rigidez de um painel burocrático nem em uma estática infantilizada.
 
 Os principios que guiam o sistema sao:
 
@@ -14,9 +14,9 @@ Os principios que guiam o sistema sao:
 ## Onde esta implementado
 
 - Tema e tokens globais: [src/index.css](C:/dev/cicloCampo/src/index.css)
-- Extensoes do Tailwind: [tailwind.config.js](C:/dev/cicloCampo/tailwind.config.js)
+- Extensões do Tailwind: [tailwind.config.js](C:/dev/cicloCampo/tailwind.config.js)
 - Componentes base: [src/components/ui](C:/dev/cicloCampo/src/components/ui)
-- Aplicacao nas telas:
+- Aplicação nas telas:
   - [src/pages/Login.tsx](C:/dev/cicloCampo/src/pages/Login.tsx)
   - [src/pages/Dashboard.tsx](C:/dev/cicloCampo/src/pages/Dashboard.tsx)
   - [src/pages/CreateBatch.tsx](C:/dev/cicloCampo/src/pages/CreateBatch.tsx)
@@ -25,7 +25,7 @@ Os principios que guiam o sistema sao:
 
 ### Cores semanticas
 
-As cores nao devem ser usadas por hex espalhado na UI. Sempre prefira os tokens semanticos:
+As cores não devem ser usadas por hex espalhado na UI. Sempre prefira os tokens semâticos:
 
 - `background`: base quente do app
 - `surface`, `surface-bright`
@@ -45,9 +45,9 @@ As cores nao devem ser usadas por hex espalhado na UI. Sempre prefira os tokens 
 - **Display e headlines:** `font-display` usa Plus Jakarta Sans.
 - **Body e interface:** `font-sans` usa Inter.
 - Use `text-label` para metadata, rotulos e pequenos marcadores editoriais.
-- Use `display-number` para metricas e numeros de destaque.
+- Use `display-number` para métricas e números de destaque.
 
-### Elevacao
+### Elevação
 
 Evite sombras convencionais de dashboard.
 
@@ -57,8 +57,8 @@ Evite sombras convencionais de dashboard.
 
 ### Superficies
 
-- `Card variant="section"`: secoes agrupadoras
-- `Card variant="interactive"`: cards de conteudo acionavel
+- `Card variant="section"`: seções agrupadoras
+- `Card variant="interactive"`: cards de conteúo acionável
 - `Card variant="hero"`: blocos principais de narrativa visual
 
 ## Componentes base
@@ -156,7 +156,7 @@ Ao criar novos componentes, siga esta ordem:
 
 1. Defina se o problema ja e coberto por `Card`, `Button`, `Field`, `Badge` ou `PageHeader`.
 2. Se nao for, crie um componente em `src/components/ui`.
-3. Reaproveite tokens semanticos em vez de criar estilos locais ad hoc.
+3. Reaproveite tokens semânticos em vez de criar estilos locais ad hoc.
 4. Documente a nova variante ou componente neste arquivo.
 
 ## Proximos componentes recomendados
@@ -168,9 +168,9 @@ Ao criar novos componentes, siga esta ordem:
 - `QRAccessCard`
 - `StatCard` dedicado
 
-## Validacao
+## Validação
 
-Ultima validacao desta implementacao:
+Última validação desta implementação:
 
 - `npm run lint`: passou
 - `npm run build`: passou
