@@ -2,9 +2,12 @@
 import { useState } from "react";
 import { login } from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { useUserStore } from "../store/useUserStore";
 
 export function Login() {
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,8 +20,25 @@ export function Login() {
     setError(null);
 
     try {
-      await login(email, password);
-      navigate("/"); // redireciona após login
+      const data = await login(email, password);
+      const userId = data.user.id;
+
+      // Busca o profile ANTES de navegar
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("school_id, role")
+        .eq("id", userId)
+        .single();
+
+      if (profile) {
+        setUser({
+          userId,
+          schoolId: profile.school_id,
+          role: profile.role ?? "teacher",
+        });
+      }
+
+      navigate("/");
     } catch (err: any) {
       setError(err.message);
     } finally {

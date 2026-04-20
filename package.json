@@ -17,7 +17,7 @@
     "react-hook-form": "^7.72.1",
     "react-qr-reader": "3.0.0-beta-1",
     "react-router-dom": "^7.14.1",
-    "root": "git+https://github.com/tanstack/react-query.git",
+    "@tanstack/react-query": "^5.75.5",
     "zod": "^4.3.6",
     "zustand": "^5.0.12"
   },
