@@ -2,8 +2,14 @@ import { Link } from "react-router-dom";
 import { BatchCard } from "../components/BatchCard";
 import { useBatches } from "../hooks/useBatches";
 import { useProfile } from "../hooks/useProfile";
-import { PageHeader, EmptyState, Button, Card, CardEyebrow } from "../components/ui";
-import { Plus } from "lucide-react";
+import {
+  PageHeader,
+  EmptyState,
+  Button,
+  Card,
+  CardEyebrow,
+} from "../components/ui";
+import { Plus, Map } from "lucide-react";
 
 export function Dashboard() {
   const { data, isLoading, error } = useBatches();
@@ -39,16 +45,24 @@ export function Dashboard() {
           title="Seus Ciclos Ativos"
           description="Acompanhe o desenvolvimento dos canteiros sob sua responsabilidade."
           action={
-            <Link to="/create-batch">
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Iniciar Novo Ciclo
-              </Button>
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link to="/create-batch">
+                <Button variant="primary">
+                  <Plus className="h-5 w-5 mr-1" />
+                  Iniciar Novo Ciclo
+                </Button>
+              </Link>
+              <Link to="/create-plot">
+                <Button variant="secondary">
+                  <Map className="h-5 w-5 mr-1" />
+                  Criar Canteiro
+                </Button>
+              </Link>
+            </div>
           }
         />
 
-        {(!data || data.length === 0) ? (
+        {!data || data.length === 0 ? (
           <EmptyState
             title="Nenhum ciclo ativo no momento"
             description="Inicie um novo ciclo clicando no botao acima para comecar a acompanhar o plantio com sua turma."
@@ -57,7 +71,9 @@ export function Dashboard() {
           <Card variant="section" className="space-y-6">
             <header className="flex flex-col gap-1">
               <CardEyebrow>Painel de controle</CardEyebrow>
-              <h2 className="font-display text-2xl text-on-surface">Ciclos da escola</h2>
+              <h2 className="font-display text-2xl text-on-surface">
+                Ciclos da escola
+              </h2>
             </header>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -69,8 +85,9 @@ export function Dashboard() {
                   plot={batch.plots?.label || "Sem canteiro central"}
                   phase="plantio"
                   days={Math.floor(
-                    (Date.now() - new Date(batch.created_at ?? Date.now()).getTime()) /
-                      (1000 * 60 * 60 * 24)
+                    (Date.now() -
+                      new Date(batch.created_at ?? Date.now()).getTime()) /
+                      (1000 * 60 * 60 * 24),
                   )}
                   lastEvent="Atualizado recentemente"
                 />

@@ -22,7 +22,12 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   return (
-    <header className={cn("grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end", className)}>
+    <header
+      className={cn(
+        "grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end",
+        className,
+      )}
+    >
       <div className="flex items-start gap-3">
         {onBack && (
           <Button
@@ -52,7 +57,9 @@ export function PageHeader({
         </div>
       </div>
 
-      {action && <div className="justify-self-start lg:justify-self-end">{action}</div>}
+      {action && (
+        <div className="justify-self-start lg:justify-self-end">{action}</div>
+      )}
     </header>
   );
 }

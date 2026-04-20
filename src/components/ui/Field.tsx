@@ -56,7 +56,10 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         <div className="field-shell">
           <input
             ref={ref}
-            className={cn("field-input", className)}
+            className={cn(
+              "field-input border-none focus:outline-none focus:ring-0 p-0 m-0",
+              className
+            )}
             {...props}
           />
         </div>

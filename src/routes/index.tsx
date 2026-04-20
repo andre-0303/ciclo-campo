@@ -3,6 +3,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Login } from "../pages/Login";
 import { Dashboard } from "../pages/Dashboard";
 import { CreateBatch } from "../pages/CreateBatch";
+import { CreatePlot } from "../pages/CreatePlot";
 
 export function AppRoutes() {
   return (
@@ -23,6 +24,15 @@ export function AppRoutes() {
           element={
             <PrivateRoute>
               <CreateBatch />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/create-plot"
+          element={
+            <PrivateRoute>
+              <CreatePlot />
             </PrivateRoute>
           }
         />
