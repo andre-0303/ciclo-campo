@@ -4,6 +4,9 @@ import { Login } from "../pages/Login";
 import { Dashboard } from "../pages/Dashboard";
 import { CreateBatch } from "../pages/CreateBatch";
 import { CreatePlot } from "../pages/CreatePlot";
+import { BatchTimeline } from "../pages/BatchTimeline";
+
+import { FinishBatch } from "../pages/FinishBatch";
 
 export function AppRoutes() {
   return (
@@ -33,6 +36,24 @@ export function AppRoutes() {
           element={
             <PrivateRoute>
               <CreatePlot />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/ciclo/:id"
+          element={
+            <PrivateRoute>
+              <BatchTimeline />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/ciclo/:id/finalizar"
+          element={
+            <PrivateRoute>
+              <FinishBatch />
             </PrivateRoute>
           }
         />

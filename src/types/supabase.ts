@@ -24,6 +24,7 @@ export type Database = {
           id: string
           metadata: Json | null
           phase: Database["public"]["Enums"]["phase_type"]
+          photo_url: string | null
         }
         Insert: {
           batch_id: string
@@ -34,6 +35,7 @@ export type Database = {
           id?: string
           metadata?: Json | null
           phase: Database["public"]["Enums"]["phase_type"]
+          photo_url?: string | null
         }
         Update: {
           batch_id?: string
@@ -44,6 +46,7 @@ export type Database = {
           id?: string
           metadata?: Json | null
           phase?: Database["public"]["Enums"]["phase_type"]
+          photo_url?: string | null
         }
         Relationships: [
           {
@@ -193,7 +196,12 @@ export type Database = {
         | "fertilization"
         | "pest_control"
         | "observation"
-      phase_type: "plantio" | "desenvolvimento" | "colheita"
+      phase_type:
+        | "plantio"
+        | "desenvolvimento"
+        | "colheita"
+        | "floracao"
+        | "frutificacao"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -329,7 +337,13 @@ export const Constants = {
         "pest_control",
         "observation",
       ],
-      phase_type: ["plantio", "desenvolvimento", "colheita"],
+      phase_type: [
+        "plantio",
+        "desenvolvimento",
+        "colheita",
+        "floracao",
+        "frutificacao",
+      ],
     },
   },
 } as const

@@ -2,8 +2,10 @@ import type { Enums } from "../../types/supabase";
 import { cn } from "../../lib/cn";
 
 const phaseProgress: Record<Enums<"phase_type">, number> = {
-  plantio: 28,
-  desenvolvimento: 62,
+  plantio: 20,
+  desenvolvimento: 40,
+  floracao: 60,
+  frutificacao: 80,
   colheita: 100,
 };
 

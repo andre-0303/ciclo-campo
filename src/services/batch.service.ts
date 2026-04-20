@@ -66,3 +66,18 @@ export async function createBatch({
 
   return batch
 }
+
+export async function finishBatch(batchId: string) {
+  const { error } = await supabase
+    .from("batches")
+    .update({
+      status: "completed",
+      finished_at: new Date().toISOString(),
+    })
+    .eq("id", batchId);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Erro ao finalizar o ciclo");
+  }
+}

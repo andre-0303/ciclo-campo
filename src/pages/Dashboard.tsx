@@ -47,14 +47,14 @@ export function Dashboard() {
           action={
             <div className="flex flex-wrap items-center gap-3">
               <Link to="/create-batch">
-                <Button variant="primary">
-                  <Plus className="h-5 w-5 mr-1" />
+                <Button variant="primary" className="rounded-full px-6 shadow-2xl">
+                  <Plus className="h-5 w-5" />
                   Iniciar Novo Ciclo
                 </Button>
               </Link>
               <Link to="/create-plot">
-                <Button variant="secondary">
-                  <Map className="h-5 w-5 mr-1" />
+                <Button variant="secondary" className="rounded-full px-6 shadow-ambient-md">
+                  <Map className="h-5 w-5" />
                   Criar Canteiro
                 </Button>
               </Link>
@@ -77,21 +77,30 @@ export function Dashboard() {
             </header>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.map((batch) => (
-                <BatchCard
-                  key={batch.id}
-                  crop={batch.crop_name}
-                  className={batch.class_name}
-                  plot={batch.plots?.label || "Sem canteiro central"}
-                  phase="plantio"
-                  days={Math.floor(
-                    (Date.now() -
-                      new Date(batch.created_at ?? Date.now()).getTime()) /
-                      (1000 * 60 * 60 * 24),
-                  )}
-                  lastEvent="Atualizado recentemente"
-                />
-              ))}
+              {data.map((batch) => {
+                const latestEvent = batch.batch_events?.[0];
+                const phase = latestEvent?.phase || "plantio";
+                const lastEventDescription = latestEvent?.description || 
+                  (latestEvent?.event_type === 'fase_change' ? `Fase: ${latestEvent.phase}` : "Sincronizando...") || 
+                  "Ciclo iniciado";
+
+                return (
+                  <Link key={batch.id} to={`/ciclo/${batch.id}`}>
+                    <BatchCard
+                      crop={batch.crop_name}
+                      className={batch.class_name}
+                      plot={batch.plots?.label || "Sem canteiro central"}
+                      phase={phase as any}
+                      days={Math.floor(
+                        (Date.now() -
+                          new Date(batch.created_at ?? Date.now()).getTime()) /
+                          (1000 * 60 * 60 * 24),
+                      )}
+                      lastEvent={lastEventDescription}
+                    />
+                  </Link>
+                );
+              })}
             </div>
           </Card>
         )}

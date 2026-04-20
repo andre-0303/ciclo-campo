@@ -5,4 +5,5 @@ export * from "./EmptyState";
 export * from "./Field";
 export * from "./GrowthTracker";
 export * from "./PageHeader";
+export * from "./Modal";
 export * from "./buttonStyles";
