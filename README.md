@@ -61,6 +61,6 @@ O CicloCampo não é apenas uma ferramenta de gestão, mas um apoio pedagógico:
 
 **André Bandeira**
 *Engenheiro de Software & Estudante de Análise e Desenvolvimento de Sistemas.*
-Atualmente atuando na Secretaria de Educação, unindo tecnologia e gestão pública para transformar a educação rural.
+Atualmente atuando na Secretaria de Educação, unindo tecnologia e gestão pública para transformar a educação.
 
 ---
