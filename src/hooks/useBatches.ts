@@ -7,6 +7,7 @@ export type BatchListItem = Pick<
   "id" | "crop_name" | "class_name" | "status" | "created_at"
 > & {
   plots: Pick<Tables<"plots">, "id" | "label"> | null;
+  qr_token: string | null;
   batch_events: Array<{
     phase: Enums<"phase_type">;
     event_type: Enums<"event_type">;
@@ -27,6 +28,7 @@ export function useBatches() {
           class_name,
           status,
           created_at,
+          qr_token,
           plots (
             id,
             label

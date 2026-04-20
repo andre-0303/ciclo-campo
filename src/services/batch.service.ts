@@ -39,6 +39,7 @@ export async function createBatch({
       crop_name,
       class_name,
       status: 'active',
+      qr_token: crypto.randomUUID(),
     })
     .select()
     .single()

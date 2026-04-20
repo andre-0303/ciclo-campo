@@ -5,8 +5,8 @@ import { Dashboard } from "../pages/Dashboard";
 import { CreateBatch } from "../pages/CreateBatch";
 import { CreatePlot } from "../pages/CreatePlot";
 import { BatchTimeline } from "../pages/BatchTimeline";
-
 import { FinishBatch } from "../pages/FinishBatch";
+import { BatchByToken } from "../pages/BatchByToken";
 
 export function AppRoutes() {
   return (
@@ -54,6 +54,15 @@ export function AppRoutes() {
           element={
             <PrivateRoute>
               <FinishBatch />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/ciclo/token/:token"
+          element={
+            <PrivateRoute>
+              <BatchByToken />
             </PrivateRoute>
           }
         />
