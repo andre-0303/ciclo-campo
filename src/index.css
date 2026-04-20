@@ -1,3 +1,194 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --background: 249 250 243;
+  --surface: 249 250 243;
+  --surface-bright: 255 253 245;
+  --surface-variant: 243 244 237;
+  --surface-container-lowest: 255 255 255;
+  --surface-container-low: 243 244 237;
+  --surface-container-high: 236 238 229;
+  --surface-container-highest: 228 232 219;
+  --primary: 27 109 36;
+  --primary-container: 93 172 91;
+  --secondary: 112 93 0;
+  --secondary-container: 248 235 179;
+  --secondary-fixed-dim: 253 216 53;
+  --tertiary-container: 116 170 52;
+  --outline-variant: 190 202 185;
+  --on-background: 26 28 24;
+  --on-surface: 26 28 24;
+  --on-surface-variant: 85 95 82;
+  --on-primary: 249 250 243;
+  --on-secondary: 249 250 243;
+  --on-secondary-container: 82 67 0;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: rgb(var(--background));
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(
+        circle at top left,
+        rgba(253, 216, 53, 0.08),
+        transparent 32%
+      ),
+      radial-gradient(
+        circle at bottom right,
+        rgba(93, 172, 91, 0.08),
+        transparent 28%
+      ),
+      rgb(var(--background));
+    color: rgb(var(--on-background));
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: rgba(93, 172, 91, 0.22);
+    color: rgb(var(--on-background));
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui,
+      sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(27, 109, 36, 0.14);
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen px-4 py-5 text-on-background md:px-8 md:py-8;
+  }
+
+  .page-shell {
+    @apply mx-auto flex w-full max-w-6xl flex-col gap-6 md:gap-8;
+  }
+
+  .surface-base {
+    @apply bg-surface;
+  }
+
+  .surface-section {
+    @apply rounded-xl bg-surface-container-low;
+  }
+
+  .surface-card {
+    @apply rounded-xl bg-surface-container-lowest shadow-ambient-sm;
+  }
+
+  .glass-panel {
+    background-color: rgba(var(--surface-variant), 0.8);
+    backdrop-filter: blur(24px);
+  }
+
+  .ghost-outline {
+    box-shadow: inset 0 0 0 1px rgba(var(--outline-variant), 0.15);
+  }
+
+  .text-label {
+    @apply text-xs font-semibold uppercase tracking-[0.22em] text-on-surface-variant;
+  }
+
+  .display-number {
+    @apply font-display tracking-[-0.03em];
+  }
+
+  .field-shell {
+    background-color: rgb(var(--surface-container-high));
+    border-radius: 1.25rem;
+    padding: 0.95rem 1rem 0.85rem;
+    box-shadow: inset 0 -2px 0 rgba(var(--outline-variant), 0.24);
+    transition:
+      box-shadow 160ms ease,
+      transform 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .field-shell:focus-within {
+    background-color: rgb(var(--surface-container-lowest));
+    box-shadow:
+      inset 0 -2px 0 rgb(var(--primary)),
+      0 0 0 4px rgba(27, 109, 36, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .field-input {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: rgb(var(--on-surface));
+    outline: none;
+  }
+
+  .field-input::placeholder {
+    color: rgba(var(--on-surface-variant), 0.68);
+  }
+
+  .field-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .ambient-orb {
+    position: absolute;
+    border-radius: 9999px;
+    pointer-events: none;
+    filter: blur(12px);
+  }
+}

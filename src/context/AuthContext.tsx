@@ -1,10 +1,8 @@
-// src/context/AuthContext.tsx
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "../lib/supabase";
+import { AuthContext } from "./auth-context";
 
-export const AuthContext = createContext({} as any);
-
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 

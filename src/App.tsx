@@ -1,4 +1,3 @@
-import './App.css'
 import { AppRoutes } from './routes'
 import { AuthProvider } from './context/AuthContext'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
