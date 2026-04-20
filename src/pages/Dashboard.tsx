@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { BatchCard } from "../components/BatchCard";
 import { useBatches } from "../hooks/useBatches";
 import { useProfile } from "../hooks/useProfile";
@@ -23,7 +24,16 @@ export function Dashboard() {
     <div className="p-4 space-y-3">
       <p className="text-gray-500 text-sm mt-3">Bom dia, Prof. {nome}</p>
 
-      <h2 className="font-bold text-2xl">Meus ciclos</h2>
+      <div className="flex flex-row justify-between">
+        <h2 className="font-bold text-2xl">Meus ciclos</h2>
+
+        <Link
+          to="/create-batch"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+        >
+          Criar Ciclo
+        </Link>
+      </div>
 
       <p className="text-gray-500 text-sm mt-3">
         Ciclos ativos ({data.length})
