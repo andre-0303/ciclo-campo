@@ -1,8 +1,12 @@
+import { BatchCard } from "../components/BatchCard";
 import { useBatches } from "../hooks/useBatches";
-import { logout } from "../services/auth.service";
+import { useProfile } from "../hooks/useProfile";
 
 export function Dashboard() {
   const { data, isLoading, error } = useBatches();
+  const { data: profile } = useProfile();
+
+  const nome = profile?.name?.split(" ")[0] || "Professor";
 
   if (isLoading) return <p>Carregando...</p>;
   if (error) return <p>Erro ao carregar</p>;
@@ -17,13 +21,26 @@ export function Dashboard() {
 
   return (
     <div className="p-4 space-y-3">
-      <button onClick={logout}>Sair</button>
+      <p className="text-gray-500 text-sm mt-3">Bom dia, Prof. {nome}</p>
+
+      <h2 className="font-bold text-2xl">Meus ciclos</h2>
+
+      <p className="text-gray-500 text-sm mt-3">
+        Ciclos ativos ({data.length})
+      </p>
       {data.map((batch) => (
-        <div key={batch.id} className="bg-white p-4 rounded shadow">
-          <h2 className="font-bold">{batch.crop_name}</h2>
-          <p>Turma: {batch.class_name}</p>
-          <p>Canteiro: {batch.plots?.label}</p>
-        </div>
+        <BatchCard
+          key={batch.id}
+          crop={batch.crop_name}
+          className={batch.class_name}
+          plot={batch.plots?.label}
+          phase="desenvolvimento"
+          days={Math.floor(
+            (Date.now() - new Date(batch.created_at ?? Date.now()).getTime()) /
+              (1000 * 60 * 60 * 24),
+          )}
+          lastEvent="Última atualização recente"
+        />
       ))}
     </div>
   );
