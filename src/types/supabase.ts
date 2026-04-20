@@ -17,6 +17,7 @@ export type Database = {
       batch_events: {
         Row: {
           batch_id: string
+          client_id: string | null
           created_at: string | null
           created_by: string
           description: string | null
@@ -28,6 +29,7 @@ export type Database = {
         }
         Insert: {
           batch_id: string
+          client_id?: string | null
           created_at?: string | null
           created_by: string
           description?: string | null
@@ -39,6 +41,7 @@ export type Database = {
         }
         Update: {
           batch_id?: string
+          client_id?: string | null
           created_at?: string | null
           created_by?: string
           description?: string | null

@@ -20,7 +20,7 @@ O projeto foi concebido para ser escalável, seguro e de baixo custo de manuten�
 - **Frontend:** [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/) (Interface moderna e tipagem estrita).
 - **Estilização:** [Tailwind CSS](https://tailwindcss.com/) (Design responsivo e alto contraste para uso em campo).
 - **Backend-as-a-Service:** [Supabase](https://supabase.com/) (PostgreSQL, Auth e Storage).
-- **PWA:** Suporte a funcionamento offline para áreas com conectividade instável.
+- **PWA / Offline-First:** Arquitetura de filas resiliente utilizando [IndexedDB](https://developer.mozilla.org/pt-BR/docs/Web/API/IndexedDB_API) para garantir registros sem internet.
 
 ---
 
@@ -45,6 +45,18 @@ O sistema utiliza uma arquitetura **Multi-tenant**, garantindo que cada escola t
 2. **Monitoramento:** Via QR Code, o professor acessa a "Timeline" do canteiro e registra ações rápidas (irrigação, fotos de pragas ou notas de crescimento).
 3. **Fases de Desenvolvimento:** O sistema rastreia as fases biológicas (Plantio, Desenvolvimento, Floração e Colheita).
 4. **Fechamento:** Ao colher, o sistema gera um resumo estatístico do ciclo, que pode ser utilizado em feiras de ciências e relatórios pedagógicos.
+
+---
+
+## 📵 Estratégia Offline-First
+
+Desenvolvido especificamente para o contexto rural, o CicloCampo utiliza uma abordagem **Offline-First** para garantir que nenhum dado seja perdido por falta de sinal.
+
+### Como funciona:
+- **Fila de Sincronização local:** Todas as ações (irrigações, adubações, notas) são salvas primeiro em um banco de dados local no navegador (**IndexedDB**).
+- **Background Sync:** O app detecta automaticamente quando a conexão é restabelecida e inicia o envio dos dados pendentes em segundo plano.
+- **Idempotência (Segurança):** Cada evento possui um `client_id` único gerado no dispositivo. Isso evita que registros sejam duplicados no servidor caso ocorram falhas de rede durante o envio.
+- **Feedback Visual:** Indicadores discretos na Timeline (⬆️ Sincronizando, ⚠️ Erro) mantêm o usuário informado sobre o estado da sua conexão sem interromper o fluxo de trabalho.
 
 ---
 

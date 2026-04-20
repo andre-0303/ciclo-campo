@@ -1,5 +1,7 @@
 import { supabase } from "../lib/supabase";
 import type { Database } from "../types/supabase";
+import { addToQueue } from "./queue.service";
+import { processQueue } from "./processor.service";
 
 type Phase = Database["public"]["Enums"]["phase_type"];
 type EventType = Database["public"]["Enums"]["event_type"];
@@ -47,11 +49,6 @@ export async function createEvent({
   description,
   next_phase,
 }: CreateEventParams) {
-  const { data: userData } = await supabase.auth.getUser();
-  const userId = userData.user?.id;
-
-  if (!userId) throw new Error("Usuário não autenticado");
-
   const currentPhase = await getCurrentPhase(batch_id);
 
   // 1️⃣ Validação de Regras de Evento (O que pode fazer nesta fase?)
@@ -75,14 +72,25 @@ export async function createEvent({
   }
 
   const phase = event_type === "fase_change" && next_phase ? next_phase : currentPhase;
+  const eventId = crypto.randomUUID();
 
-  const { error } = await supabase.from("batch_events").insert({
+  // 3️⃣ Prepara evento para fila offline
+  const queueEvent = {
+    id: eventId,
     batch_id,
-    created_by: userId,
     event_type,
     phase,
     description,
-  } as any);
+    created_at: new Date().toISOString(),
+    status: 'pending' as const,
+    retry_count: 0
+  };
 
-  if (error) throw error;
+  // 4️⃣ Salva na fila (IndexedDB)
+  await addToQueue(queueEvent);
+
+  // 5️⃣ Tenta processar se estiver online
+  if (navigator.onLine) {
+    processQueue();
+  }
 }

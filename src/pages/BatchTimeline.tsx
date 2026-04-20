@@ -5,6 +5,8 @@ import { supabase } from "../lib/supabase";
 import { useBatchEvents } from "../hooks/useBatchEvents";
 import { useBatch } from "../hooks/useBatch";
 import { useCreateEvent } from "../hooks/useCreateEvent";
+import { useQueueStatus } from "../hooks/useQueueStatus";
+import { usePendingEvents } from "../hooks/usePendingEvents";
 import { PageHeader, Card, CardEyebrow, Button, Modal } from "../components/ui";
 import { useToast } from "../components/ui/Toast";
 import { QRCodeCanvas } from "qrcode.react";
@@ -83,6 +85,8 @@ export function BatchTimeline() {
   const { toast } = useToast();
   const { data: batch, isLoading: isLoadingBatch } = useBatch(id!);
   const { data: events, isLoading: isLoadingEvents } = useBatchEvents(id!);
+  const { pendingEvents } = usePendingEvents(id!);
+  const { pending } = useQueueStatus();
   const { mutateAsync: createEvent } = useCreateEvent(id!);
   const queryClient = useQueryClient();
 
@@ -149,6 +153,12 @@ export function BatchTimeline() {
     );
   }
 
+  // Mesclagem de eventos do servidor com a fila local
+  const displayEvents = [
+    ...(pendingEvents || []).map(e => ({ ...e, is_pending: true })),
+    ...(events || [])
+  ].sort((a, b) => new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime());
+
   const currentPhase = events?.[0]?.phase || "plantio";
   const phaseIndex = PHASE_OPTIONS.findIndex((p) => p.value === currentPhase);
   const progress = ((phaseIndex + 1) / (PHASE_OPTIONS.length + 1)) * 100;
@@ -163,7 +173,7 @@ export function BatchTimeline() {
             (1000 * 60 * 60 * 24),
         )
       : 0,
-    phaseStart: events?.filter((e) => e.phase === currentPhase).slice(-1)[0]
+    phaseStart: [...(events || [])].filter((e) => e.phase === currentPhase).slice(-1)[0]
       ?.created_at,
   };
 
@@ -253,8 +263,14 @@ export function BatchTimeline() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                  <CardEyebrow className="mb-0 text-primary font-black uppercase tracking-[0.2em]">
-                    Fase: {currentPhase}
+                  <CardEyebrow className="mb-0 text-primary font-black uppercase tracking-[0.2em] flex items-center gap-3">
+                    <span>Fase: {currentPhase}</span>
+                    {pending > 0 && (
+                      <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-100 text-amber-700 text-[9px] animate-pulse">
+                        <RefreshCw className="h-2.5 w-2.5 animate-spin" />
+                        {pending} PENDENTE(S)
+                      </span>
+                    )}
                   </CardEyebrow>
                 </div>
                 <h1 className="text-3xl font-display font-black text-on-surface tracking-tight leading-none">
@@ -441,11 +457,11 @@ export function BatchTimeline() {
               Atividades
             </CardEyebrow>
             <span className="text-[10px] font-black text-on-surface-variant/40 bg-surface-container px-2 py-1 rounded-full uppercase tracking-widest">
-              {events?.length || 0} Registros
+              {displayEvents?.length || 0} Registros
             </span>
           </div>
 
-          {!events || events.length === 0 ? (
+          {!displayEvents || displayEvents.length === 0 ? (
             <Card
               variant="section"
               className="flex flex-col items-center py-20 text-center bg-transparent border-dashed border-2 border-on-surface-variant/10 rounded-2xl"
@@ -462,35 +478,52 @@ export function BatchTimeline() {
             </Card>
           ) : (
             <div className="space-y-4 relative">
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent -z-10" />
+              <div className="absolute left-11 top-10 bottom-10 w-0.5 bg-black/[0.03]" />
 
-              {(showAllEvents ? events : events.slice(0, 5)).map((event) => {
+              {(showAllEvents ? displayEvents : displayEvents.slice(0, 5)).map((event) => {
                 const config =
                   eventConfig[event.event_type] || eventConfig.observation;
                 const Icon = config.icon;
+                const isPending = (event as any).is_pending;
+                const hasError = (event as any).status === 'error';
 
                 return (
                   <Card
                     key={event.id}
-                    className="group relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 active:scale-[0.98] border-0 bg-white p-5 rounded-2xl"
+                    className={cn(
+                        "group relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 active:scale-[0.98] border-0 p-5 rounded-2xl",
+                        isPending ? "bg-amber-50/50 opacity-80" : "bg-white",
+                        hasError && "border-l-4 border-red-500 bg-red-50"
+                    )}
                   >
                     <div className="flex gap-5">
                       <div
                         className={cn(
                           "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl shadow-inner",
-                          config.color,
+                          isPending ? "bg-amber-200 text-amber-700" : config.color,
                         )}
                       >
-                        <Icon className="h-6 w-6" />
+                        {isPending ? <RefreshCw className="h-6 w-6 animate-spin" /> : <Icon className="h-6 w-6" />}
                       </div>
 
                       <div className="flex-1 space-y-3">
                         <div className="flex items-start justify-between gap-2">
                           <div className="space-y-0.5">
                             <div className="flex items-center gap-2">
-                              <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant">
-                                {event.phase}
-                              </span>
+                              {hasError ? (
+                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md bg-red-500 text-white flex items-center gap-1">
+                                    <RefreshCw className="h-2 w-2" /> FALHA NA SINCRONIZAÇÃO
+                                </span>
+                              ) : (
+                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant">
+                                    {event.phase}
+                                </span>
+                              )}
+                              {isPending && !hasError && (
+                                <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 animate-pulse">
+                                    Sincronizando...
+                                </span>
+                              )}
                             </div>
                             <h3 className="font-display text-lg font-black text-on-surface tracking-tight leading-none mt-1">
                               {event.event_type === "fase_change"
@@ -519,14 +552,14 @@ export function BatchTimeline() {
                 );
               })}
 
-              {events.length > 5 && (
+              {(events?.length || 0) > 5 && (
                 <button
                   onClick={() => setShowAllEvents(!showAllEvents)}
                   className="w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 hover:text-primary transition-colors flex items-center justify-center gap-2 bg-white/40 rounded-2xl border border-dashed border-primary/10"
                 >
                   {showAllEvents
                     ? "Ocultar atividades antigas"
-                    : `Ver mais ${events.length - 5} atividades`}
+                    : `Ver mais ${(events?.length || 0) - 5} atividades`}
                 </button>
               )}
             </div>
