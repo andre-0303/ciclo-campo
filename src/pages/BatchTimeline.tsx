@@ -1,4 +1,4 @@
-import { useState, useEffect, useSyncExternalStore } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
@@ -8,6 +8,7 @@ import { useCreateEvent } from "../hooks/useCreateEvent";
 import { useQueueStatus } from "../hooks/useQueueStatus";
 import { usePendingEvents } from "../hooks/usePendingEvents";
 import { PageHeader, Card, CardEyebrow, Button, Modal } from "../components/ui";
+import { useIsOnline } from "../hooks/useIsOnline";
 import { useToast } from "../components/ui/Toast";
 import { QRCodeCanvas } from "qrcode.react";
 import {
@@ -78,20 +79,8 @@ const PHASE_OPTIONS = [
     label: "Colheita",
     description: "Fase final de coleta dos produtos",
   },
-];
+]; 
 
-function subscribeOnline(cb: () => void) {
-  window.addEventListener('online', cb);
-  window.addEventListener('offline', cb);
-  return () => {
-    window.removeEventListener('online', cb);
-    window.removeEventListener('offline', cb);
-  };
-}
-
-function getOnlineSnapshot() {
-  return navigator.onLine;
-}
 
 export function BatchTimeline() {
   const { id } = useParams();
@@ -103,7 +92,7 @@ export function BatchTimeline() {
   const { pending } = useQueueStatus();
   const { mutateAsync: createEvent } = useCreateEvent(id!);
   const queryClient = useQueryClient();
-  const isOnline = useSyncExternalStore(subscribeOnline, getOnlineSnapshot);
+  const isOnline = useIsOnline();
 
   useEffect(() => {
     // Auto-gera token se não existir (para batches antigos)

@@ -1,8 +1,11 @@
 // src/hooks/useBatchEvents.ts
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
+import { useIsOnline } from "./useIsOnline";
 
 export function useBatchEvents(batchId: string) {
+  const isOnline = useIsOnline();
+
   return useQuery({
     queryKey: ["batch-events", batchId],
     queryFn: async () => {
@@ -24,6 +27,6 @@ export function useBatchEvents(batchId: string) {
 
       return data ?? []
     },
-    enabled: !!batchId,
+    enabled: !!batchId && isOnline,
   })
 }

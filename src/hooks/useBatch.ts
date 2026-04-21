@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
+import { useIsOnline } from "./useIsOnline";
 import type { BatchListItem } from "./useBatches";
 
 export function useBatch(id: string) {
+  const isOnline = useIsOnline();
+
   return useQuery({
     queryKey: ["batch", id],
     queryFn: async () => {
@@ -26,6 +29,6 @@ export function useBatch(id: string) {
       if (error) throw error;
       return data as BatchListItem;
     },
-    enabled: !!id,
+    enabled: !!id && isOnline,
   });
 }

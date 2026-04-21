@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
+import { useIsOnline } from "./useIsOnline";
 import type { Tables, Enums } from "../types/supabase";
 
 export type BatchListItem = Pick<
@@ -17,6 +18,8 @@ export type BatchListItem = Pick<
 };
 
 export function useBatches() {
+  const isOnline = useIsOnline();
+
   return useQuery({
     queryKey: ["batches"],
     queryFn: async () => {
@@ -52,5 +55,7 @@ export function useBatches() {
 
       return (data ?? []) as any as BatchListItem[];
     },
+    // Desabilita a query quando offline — sem requests, sem erros
+    enabled: isOnline,
   });
 }

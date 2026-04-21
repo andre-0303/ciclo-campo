@@ -4,7 +4,11 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60, // 1 minuto
-      retry: 1,
+      retry: (failureCount) => {
+        // Não faz retry quando está offline
+        if (!navigator.onLine) return false;
+        return failureCount < 1;
+      },
     },
   },
 });
