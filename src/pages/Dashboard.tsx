@@ -9,11 +9,19 @@ import {
   Card,
   CardEyebrow,
 } from "../components/ui";
-import { Plus, Map } from "lucide-react";
+import { Plus, Map, LogOut } from "lucide-react";
+import { supabase } from "../lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 export function Dashboard() {
+  const navigate = useNavigate();
   const { data, isLoading, error } = useBatches();
   const { data: profile } = useProfile();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
 
   const nome = profile?.name?.split(" ")[0] || "Professor";
 
@@ -42,18 +50,29 @@ export function Dashboard() {
       <div className="page-shell">
         <PageHeader
           eyebrow={`Bom dia, Prof. ${nome}`}
+          eyebrowAction={
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="text-on-surface-variant hover:text-red-500 transition-colors"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sair
+            </Button>
+          }
           title="Seus Ciclos Ativos"
           description="Acompanhe o desenvolvimento dos canteiros sob sua responsabilidade."
           action={
             <div className="flex flex-wrap items-center gap-3">
               <Link to="/create-batch">
-                <Button variant="primary" className="rounded-full px-6 shadow-2xl">
+                <Button variant="primary" className="px-6 shadow-2xl">
                   <Plus className="h-5 w-5" />
                   Iniciar Novo Ciclo
                 </Button>
               </Link>
               <Link to="/create-plot">
-                <Button variant="secondary" className="rounded-full px-6 shadow-ambient-md">
+                <Button variant="secondary" className="px-6 shadow-ambient-md">
                   <Map className="h-5 w-5" />
                   Criar Canteiro
                 </Button>

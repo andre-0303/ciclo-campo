@@ -57,7 +57,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           <input
             ref={ref}
             className={cn(
-              "field-input border-none focus:outline-none focus:ring-0 p-0 m-0",
+              "field-input border-none focus:outline-none focus:ring-0 p-0 m-0 placeholder:text-on-surface-variant/40",
               className
             )}
             {...props}

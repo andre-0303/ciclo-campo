@@ -36,7 +36,7 @@ export function buttonStyles({
   className,
 }: ButtonStyleOptions = {}) {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition duration-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-55",
+    "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition duration-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-55",
     sizeStyles[size],
     variantStyles[variant],
     fullWidth && "w-full",
