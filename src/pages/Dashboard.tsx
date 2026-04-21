@@ -12,6 +12,7 @@ import {
 import { Plus, Map, LogOut } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import { queryClient } from "../lib/queryClient";
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -20,10 +21,13 @@ export function Dashboard() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    queryClient.clear();
     navigate("/login");
   };
 
   const nome = profile?.name?.split(" ")[0] || "Professor";
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
 
   if (isLoading) {
     return (
@@ -49,7 +53,7 @@ export function Dashboard() {
     <div className="app-shell">
       <div className="page-shell">
         <PageHeader
-          eyebrow={`Bom dia, Prof. ${nome}`}
+          eyebrow={`${greeting}, Prof. ${nome}`}
           eyebrowAction={
             <Button 
               variant="ghost" 

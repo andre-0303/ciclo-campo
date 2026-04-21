@@ -1,26 +1,20 @@
 // src/hooks/usePendingEvents.ts
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { getPendingEvents } from '../services/queue.service'
-import type { QueueEvent } from '../types/queue'
 
 export function usePendingEvents(batchId: string) {
-  const [pendingEvents, setPendingEvents] = useState<QueueEvent[]>([])
-
-  async function load() {
-    try {
+  const { data: pendingEvents = [], refetch } = useQuery({
+    queryKey: ['pending-events', batchId],
+    queryFn: async () => {
       const all = await getPendingEvents()
-      const filtered = all.filter(e => e.batch_id === batchId)
-      setPendingEvents(filtered)
-    } catch (err) {
-      console.error('Erro ao carregar eventos pendentes:', err)
-    }
+      return all.filter(e => e.batch_id === batchId)
+    },
+    enabled: !!batchId,
+    refetchInterval: 3000,
+  })
+
+  return { 
+    pendingEvents, 
+    refresh: refetch 
   }
-
-  useEffect(() => {
-    load()
-    const interval = setInterval(load, 3000)
-    return () => clearInterval(interval)
-  }, [batchId])
-
-  return { pendingEvents, refresh: load }
 }

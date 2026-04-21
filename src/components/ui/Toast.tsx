@@ -1,9 +1,9 @@
 import { useState, createContext, useContext, useCallback, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { CheckCircle2, AlertCircle, X } from "lucide-react";
+import { CheckCircle2, AlertCircle, WifiOff, X } from "lucide-react";
 import { cn } from "../../lib/cn";
 
-type ToastType = "success" | "error";
+type ToastType = "success" | "error" | "warning";
 
 interface Toast {
   id: string;
@@ -32,6 +32,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const iconMap = {
+    success: <CheckCircle2 className="h-5 w-5 shrink-0" />,
+    error: <AlertCircle className="h-5 w-5 shrink-0" />,
+    warning: <WifiOff className="h-5 w-5 shrink-0" />,
+  };
+
+  const colorMap = {
+    success: "bg-primary text-on-primary",
+    error: "bg-red-600 text-white",
+    warning: "bg-amber-500 text-white",
+  };
+
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
@@ -42,16 +54,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               key={t.id}
               className={cn(
                 "flex min-w-[300px] items-center gap-3 rounded-2xl p-4 shadow-xl animate-in slide-in-from-bottom-5 fade-in duration-300",
-                t.type === "success"
-                  ? "bg-primary text-on-primary"
-                  : "bg-red-600 text-white"
+                colorMap[t.type]
               )}
             >
-              {t.type === "success" ? (
-                <CheckCircle2 className="h-5 w-5 shrink-0" />
-              ) : (
-                <AlertCircle className="h-5 w-5 shrink-0" />
-              )}
+              {iconMap[t.type]}
               <span className="flex-1 text-sm font-bold tracking-tight">
                 {t.message}
               </span>

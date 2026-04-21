@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
@@ -24,6 +24,7 @@ import {
   ChevronRight,
   Printer,
   QrCode,
+  WifiOff,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 
@@ -79,6 +80,19 @@ const PHASE_OPTIONS = [
   },
 ];
 
+function subscribeOnline(cb: () => void) {
+  window.addEventListener('online', cb);
+  window.addEventListener('offline', cb);
+  return () => {
+    window.removeEventListener('online', cb);
+    window.removeEventListener('offline', cb);
+  };
+}
+
+function getOnlineSnapshot() {
+  return navigator.onLine;
+}
+
 export function BatchTimeline() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -89,6 +103,7 @@ export function BatchTimeline() {
   const { pending } = useQueueStatus();
   const { mutateAsync: createEvent } = useCreateEvent(id!);
   const queryClient = useQueryClient();
+  const isOnline = useSyncExternalStore(subscribeOnline, getOnlineSnapshot);
 
   useEffect(() => {
     // Auto-gera token se não existir (para batches antigos)
@@ -127,7 +142,11 @@ export function BatchTimeline() {
         description,
         next_phase: nextPhase as any,
       });
-      toast(`Registro de ${description.toLowerCase()} realizado!`);
+      if (navigator.onLine) {
+        toast(`Registro de ${description.toLowerCase()} realizado!`);
+      } else {
+        toast(`Salvo offline! Será sincronizado automaticamente.`, "warning");
+      }
       if (nextPhase) setIsPhaseModalOpen(false);
     } catch (err: any) {
       toast(err.message || "Erro ao realizar ação", "error");
@@ -245,6 +264,23 @@ export function BatchTimeline() {
 
       <div className="page-shell max-w-2xl print:hidden">
         <PageHeader title="Diário do Ciclo" onBack={() => navigate("/")} />
+
+        {/* BANNER OFFLINE */}
+        {!isOnline && (
+          <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-amber-50 border border-amber-200 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="h-9 w-9 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+              <WifiOff className="h-4 w-4 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-xs font-black text-amber-800 uppercase tracking-widest leading-none">
+                Modo Offline
+              </p>
+              <p className="text-[10px] font-bold text-amber-600/80 mt-0.5">
+                Seus registros serão sincronizados ao voltar a internet.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* BATCH HEADER - CONTEXT */}
         <Card

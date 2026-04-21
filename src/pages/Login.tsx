@@ -3,6 +3,7 @@ import { ArrowRight, NotebookTabs, Sprout, SunMedium } from "lucide-react";
 import { login } from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { queryClient } from "../lib/queryClient";
 import { useUserStore } from "../store/useUserStore";
 import { Button, Card, CardEyebrow, InputField } from "../components/ui";
 
@@ -38,6 +39,7 @@ export function Login() {
         });
       }
 
+      queryClient.clear();
       navigate("/");
     } catch (err: any) {
       setError(err instanceof Error ? err.message : "Não foi possivel entrar.");

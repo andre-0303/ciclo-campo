@@ -11,6 +11,9 @@ export function useCreateEvent(batchId: string) {
       queryClient.invalidateQueries({
         queryKey: ['batch-events', batchId],
       })
+      queryClient.invalidateQueries({
+        queryKey: ['pending-events', batchId],
+      })
     },
   })
 }
