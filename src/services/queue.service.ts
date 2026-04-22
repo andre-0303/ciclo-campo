@@ -11,7 +11,9 @@ export async function getPendingEvents() {
   const db = await dbPromise
   const all = await db.getAll('event_queue')
 
-  return all.filter(e => e.status === 'pending' || e.status === 'error')
+  return all.filter(
+    (event) => event.status === 'pending' || event.status === 'error'
+  )
 }
 
 export async function updateEvent(event: QueueEvent) {

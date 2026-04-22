@@ -11,7 +11,7 @@ export function useQueueStatus() {
       const all = await db.getAll('event_queue')
 
       const count = all.filter(
-        e => e.status === 'pending' || e.status === 'error'
+        (event) => event.status === 'pending' || event.status === 'error'
       ).length
 
       setPending(count)

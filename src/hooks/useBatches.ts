@@ -1,21 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { useIsOnline } from "./useIsOnline";
-import type { Tables, Enums } from "../types/supabase";
-
-export type BatchListItem = Pick<
-  Tables<"batches">,
-  "id" | "crop_name" | "class_name" | "status" | "created_at" | "phases"
-> & {
-  plots: Pick<Tables<"plots">, "id" | "label"> | null;
-  qr_token: string | null;
-  batch_events: Array<{
-    phase: Enums<"phase_type">;
-    event_type: Enums<"event_type">;
-    description: string | null;
-    created_at: string | null;
-  }>;
-};
+import type { BatchListItem } from "../types/batch";
 
 export function useBatches() {
   const isOnline = useIsOnline();
@@ -54,7 +40,7 @@ export function useBatches() {
         throw error;
       }
 
-      return (data ?? []) as any as BatchListItem[];
+      return (data ?? []) as BatchListItem[];
     },
     // Desabilita a query quando offline — sem requests, sem erros
     enabled: isOnline,

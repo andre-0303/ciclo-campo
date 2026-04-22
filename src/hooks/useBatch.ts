@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { useIsOnline } from "./useIsOnline";
+import type { BatchDetail } from "../types/batch";
 
 export function useBatch(id: string) {
   const isOnline = useIsOnline();
@@ -30,7 +31,7 @@ export function useBatch(id: string) {
         .single();
 
       if (error) throw error;
-      return data as any;
+      return data as BatchDetail;
     },
     enabled: !!id && isOnline,
   });

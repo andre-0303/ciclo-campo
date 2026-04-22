@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { useIsOnline } from "./useIsOnline";
+import type { BatchEventRecord } from "../types/batch";
 
 export function useBatchEvents(batchId: string) {
   const isOnline = useIsOnline();
@@ -25,7 +26,7 @@ export function useBatchEvents(batchId: string) {
 
       if (error) throw error
 
-      return data ?? []
+      return (data ?? []) as BatchEventRecord[]
     },
     enabled: !!batchId && isOnline,
   })
