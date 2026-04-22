@@ -1,5 +1,6 @@
 // src/services/batch.service.ts
 import { supabase } from "../lib/supabase";
+import { getPhasesForCrop } from "../config/crops";
 
 export async function createBatch({
   crop_name,
@@ -30,6 +31,9 @@ export async function createBatch({
     throw new Error('Perfil não encontrado')
   }
 
+  // Determina as fases aplicáveis para este cultivo
+  const phases = getPhasesForCrop(crop_name);
+
   // 1. cria batch
   const { data: batch, error: batchError } = await supabase
     .from('batches')
@@ -40,6 +44,7 @@ export async function createBatch({
       class_name,
       status: 'active',
       qr_token: crypto.randomUUID(),
+      phases,
     })
     .select()
     .single()
@@ -80,5 +85,29 @@ export async function finishBatch(batchId: string) {
   if (error) {
     console.error(error);
     throw new Error("Erro ao finalizar o ciclo");
+  }
+}
+
+export async function deleteBatch(batchId: string) {
+  // O Supabase vai deletar os eventos em cascata se o FK tiver ON DELETE CASCADE
+  // Senão, é necessário deletar os eventos antes.
+  const { error: eventsError } = await supabase
+    .from("batch_events")
+    .delete()
+    .eq("batch_id", batchId);
+    
+  if (eventsError) {
+    console.error(eventsError)
+    throw new Error("Erro ao apagar eventos do ciclo");
+  }
+
+  const { error } = await supabase
+    .from("batches")
+    .delete()
+    .eq("id", batchId);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Erro ao excluir o ciclo");
   }
 }

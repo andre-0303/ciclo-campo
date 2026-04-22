@@ -7,6 +7,7 @@ import { useBatch } from "../hooks/useBatch";
 import { useCreateEvent } from "../hooks/useCreateEvent";
 import { useQueueStatus } from "../hooks/useQueueStatus";
 import { usePendingEvents } from "../hooks/usePendingEvents";
+import { useDeleteBatch } from "../hooks/useDeleteBatch";
 import { PageHeader, Card, CardEyebrow, Button, Modal } from "../components/ui";
 import { useIsOnline } from "../hooks/useIsOnline";
 import { useToast } from "../components/ui/Toast";
@@ -26,8 +27,11 @@ import {
   Printer,
   QrCode,
   WifiOff,
+  School,
+  Trash2,
 } from "lucide-react";
 import { cn } from "../lib/cn";
+import { DEFAULT_PHASES, getPhaseOptionsForBatch, type Phase } from "../config/crops";
 
 const eventConfig: Record<string, { label: string; icon: any; color: string }> =
   {
@@ -58,30 +62,6 @@ const eventConfig: Record<string, { label: string; icon: any; color: string }> =
     },
   };
 
-const PHASE_OPTIONS = [
-  {
-    value: "desenvolvimento",
-    label: "Desenvolvimento",
-    description: "Crescimento vegetativo e folhagem",
-  },
-  {
-    value: "floracao",
-    label: "Floração",
-    description: "Surgimento das primeiras flores",
-  },
-  {
-    value: "frutificacao",
-    label: "Frutificação",
-    description: "Formação e maturação dos frutos",
-  },
-  {
-    value: "colheita",
-    label: "Colheita",
-    description: "Fase final de coleta dos produtos",
-  },
-]; 
-
-
 export function BatchTimeline() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -91,6 +71,7 @@ export function BatchTimeline() {
   const { pendingEvents } = usePendingEvents(id!);
   const { pending } = useQueueStatus();
   const { mutateAsync: createEvent } = useCreateEvent(id!);
+  const { mutateAsync: deleteBatchAsync, isPending: isDeleting } = useDeleteBatch();
   const queryClient = useQueryClient();
   const isOnline = useIsOnline();
 
@@ -167,9 +148,12 @@ export function BatchTimeline() {
     ...(events || [])
   ].sort((a, b) => new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime());
 
+  const batchPhases = (batch?.phases as Phase[]) || DEFAULT_PHASES;
+  const phaseOptions = getPhaseOptionsForBatch(batchPhases);
   const currentPhase = events?.[0]?.phase || "plantio";
-  const phaseIndex = PHASE_OPTIONS.findIndex((p) => p.value === currentPhase);
-  const progress = ((phaseIndex + 1) / (PHASE_OPTIONS.length + 1)) * 100;
+  const phaseIndex = batchPhases.findIndex((p) => p === currentPhase);
+  // Usa (length - 1) para que "plantio" (index 0) seja 0% e "colheita" (último index) seja 100%
+  const progress = (Math.max(0, phaseIndex) / Math.max(1, batchPhases.length - 1)) * 100;
 
   const stats = {
     irrigationCount:
@@ -208,7 +192,9 @@ export function BatchTimeline() {
             <h1 className="text-7xl font-black text-on-surface tracking-tighter">
               {batch?.crop_name}
             </h1>
-            <div className="flex items-center justify-center gap-6 text-3xl font-bold text-primary/60 uppercase tracking-widest">
+            <div className="flex items-center justify-center gap-6 text-2xl font-bold text-primary/60 uppercase tracking-widest">
+              <span>{batch?.plots?.schools?.name}</span>
+              <span className="opacity-30">•</span>
               <span>{batch?.class_name}</span>
               <span className="opacity-30">•</span>
               <span>{batch?.plots?.label}</span>
@@ -319,6 +305,12 @@ export function BatchTimeline() {
             </div>
 
             <div className="flex flex-wrap gap-2">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/60 backdrop-blur-md border border-black/5 shadow-sm">
+                <School className="h-3.5 w-3.5 text-primary" />
+                <span className="text-[10px] font-black text-on-surface uppercase tracking-wider">
+                  {batch?.plots?.schools?.name || "..."}
+                </span>
+              </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/60 backdrop-blur-md border border-black/5 shadow-sm">
                 <Users className="h-3.5 w-3.5 text-primary" />
                 <span className="text-[10px] font-black text-on-surface uppercase tracking-wider">
@@ -590,6 +582,28 @@ export function BatchTimeline() {
             </div>
           )}
         </section>
+
+        {/* DANGER ZONE */}
+        <section className="pt-12 pb-8 flex justify-center">
+          <Button 
+            variant="secondary"
+            isLoading={isDeleting}
+            className="text-red-600 bg-red-50/50 hover:bg-red-100/80 hover:text-red-700 border border-red-100 text-[10px] font-black uppercase tracking-[0.2em] px-6 h-auto py-3 rounded-xl transition-colors"
+            onClick={async () => {
+              if(window.confirm('Tem certeza que deseja excluir todo este ciclo? Esta ação não tem volta e apagará todos os registros.')) {
+                try {
+                  await deleteBatchAsync(id!);
+                  toast("Ciclo excluído com sucesso!");
+                  navigate('/');
+                } catch (err: any) {
+                  toast(err.message || "Erro ao excluir ciclo", "error");
+                }
+              }
+            }}
+          >
+            <Trash2 className="h-4 w-4 mr-2" /> Excluir Ciclo Permanentemente
+          </Button>
+        </section>
       </div>
 
       {/* PHASE MODAL */}
@@ -604,7 +618,7 @@ export function BatchTimeline() {
             Selecione a próxima fase lógica:
           </p>
           <div className="grid gap-3">
-            {PHASE_OPTIONS.map((option) => {
+            {phaseOptions.map((option) => {
               const isActive = currentPhase === option.value;
               return (
                 <button

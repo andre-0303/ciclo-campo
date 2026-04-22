@@ -68,6 +68,7 @@ export type Database = {
           crop_name: string
           finished_at: string | null
           id: string
+          phases: string[]
           plot_id: string
           qr_token: string | null
           school_id: string
@@ -79,6 +80,7 @@ export type Database = {
           crop_name: string
           finished_at?: string | null
           id?: string
+          phases?: string[]
           plot_id: string
           qr_token?: string | null
           school_id: string
@@ -90,6 +92,7 @@ export type Database = {
           crop_name?: string
           finished_at?: string | null
           id?: string
+          phases?: string[]
           plot_id?: string
           qr_token?: string | null
           school_id?: string

@@ -5,7 +5,7 @@ import type { Tables, Enums } from "../types/supabase";
 
 export type BatchListItem = Pick<
   Tables<"batches">,
-  "id" | "crop_name" | "class_name" | "status" | "created_at"
+  "id" | "crop_name" | "class_name" | "status" | "created_at" | "phases"
 > & {
   plots: Pick<Tables<"plots">, "id" | "label"> | null;
   qr_token: string | null;
@@ -30,6 +30,7 @@ export function useBatches() {
           crop_name,
           class_name,
           status,
+          phases,
           created_at,
           qr_token,
           plots (

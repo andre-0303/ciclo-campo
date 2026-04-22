@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { useIsOnline } from "./useIsOnline";
-import type { BatchListItem } from "./useBatches";
 
 export function useBatch(id: string) {
   const isOnline = useIsOnline();
@@ -18,16 +17,20 @@ export function useBatch(id: string) {
           status,
           created_at,
           qr_token,
+          phases,
           plots (
             id,
-            label
+            label,
+            schools (
+              name
+            )
           )
         `)
         .eq("id", id)
         .single();
 
       if (error) throw error;
-      return data as BatchListItem;
+      return data as any;
     },
     enabled: !!id && isOnline,
   });
