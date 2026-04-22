@@ -69,15 +69,6 @@ O CicloCampo não é apenas uma ferramenta de gestão, mas um apoio pedagógico:
 
 ---
 
-## 🎨 Design System
-
-O projeto agora possui um design system implementado com base no conceito **The Living Ledger**, focado em legibilidade em campo, camadas tonais e uma linguagem editorial mais orgânica.
-
-Documentação:
-- [Design System](https://github.com/andre-0303/ciclo-campo/blob/main/docs/design-system.md)
-
----
-
 ## 👨‍💻 Desenvolvedor
 
 **André Bandeira**
