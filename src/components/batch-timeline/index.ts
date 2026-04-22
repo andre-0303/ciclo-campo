@@ -6,3 +6,4 @@ export * from "./BatchTimelinePhaseModal";
 export * from "./BatchTimelinePrintLabel";
 export * from "./BatchTimelineQuickActions";
 export * from "./BatchTimelineStats";
+export * from "./BatchTimelineObservationModal";

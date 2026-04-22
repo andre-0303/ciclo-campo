@@ -8,6 +8,7 @@ import {
   BatchTimelineOfflineBanner,
   BatchTimelineOverview,
   BatchTimelinePhaseModal,
+  BatchTimelineObservationModal,
   BatchTimelinePrintLabel,
   BatchTimelineQuickActions,
   BatchTimelineStats,
@@ -47,6 +48,7 @@ export function BatchTimeline() {
 
   const [loadingAction, setLoadingAction] = useState<BatchEventType | null>(null);
   const [isPhaseModalOpen, setIsPhaseModalOpen] = useState(false);
+  const [isObservationModalOpen, setIsObservationModalOpen] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
 
   useEffect(() => {
@@ -96,6 +98,10 @@ export function BatchTimeline() {
 
       if (nextPhase) {
         setIsPhaseModalOpen(false);
+      }
+      
+      if (type === "observation") {
+        setIsObservationModalOpen(false);
       }
     } catch (error) {
       toast(getErrorMessage(error), "error");
@@ -203,6 +209,7 @@ export function BatchTimeline() {
           loadingAction={loadingAction}
           onQuickAction={handleQuickAction}
           onOpenPhaseModal={() => setIsPhaseModalOpen(true)}
+          onOpenObservationModal={() => setIsObservationModalOpen(true)}
           onFinishBatch={(nextBatchId) => navigate(`/ciclo/${nextBatchId}/finalizar`)}
         />
 
@@ -232,6 +239,13 @@ export function BatchTimeline() {
             nextPhase,
           )
         }
+      />
+
+      <BatchTimelineObservationModal
+        isOpen={isObservationModalOpen}
+        loadingAction={loadingAction}
+        onClose={() => setIsObservationModalOpen(false)}
+        onSave={(text) => handleQuickAction("observation", text)}
       />
     </div>
   );

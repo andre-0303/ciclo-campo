@@ -9,6 +9,7 @@ interface BatchTimelineQuickActionsProps {
   loadingAction: BatchEventType | null;
   onQuickAction: (type: BatchEventType, description: string) => void;
   onOpenPhaseModal: () => void;
+  onOpenObservationModal: () => void;
   onFinishBatch: (batchId: string) => void;
 }
 
@@ -18,6 +19,7 @@ export function BatchTimelineQuickActions({
   loadingAction,
   onQuickAction,
   onOpenPhaseModal,
+  onOpenObservationModal,
   onFinishBatch,
 }: BatchTimelineQuickActionsProps) {
   return (
@@ -42,7 +44,7 @@ export function BatchTimelineQuickActions({
         <Button
           variant="secondary"
           isLoading={loadingAction === "observation"}
-          onClick={() => onQuickAction("observation", "Observação")}
+          onClick={onOpenObservationModal}
           className="flex-col h-auto py-6 gap-3 rounded-2xl bg-surface-container-high border-0 hover:bg-slate-100 transition-all duration-300 group"
         >
           <MessageSquarePlus className="h-8 w-8 group-hover:translate-y-[-2px] transition-transform" />
