@@ -1,4 +1,5 @@
-import { MapPin, Printer, QrCode, RefreshCw, School, Users } from "lucide-react";
+import { MapPin, Printer, QrCode, RefreshCw, School, Users, Award } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button, Card, CardEyebrow } from "../ui";
 import type { BatchDetail, BatchPhase } from "../../types/batch";
 
@@ -115,6 +116,43 @@ export function BatchTimelineOverview({
           </Button>
         </Card>
       </section>
+
+      {batch?.status === "completed" && (
+        <section className="space-y-4">
+          <CardEyebrow className="px-1 tracking-[0.2em] text-green-700">
+            Ciclo Finalizado
+          </CardEyebrow>
+          <Card className="p-6 flex flex-col gap-6 rounded-3xl border-2 border-green-100 bg-green-50/30">
+            <div className="flex items-center gap-5">
+              <div className="h-16 w-16 rounded-2xl bg-green-600 text-white flex items-center justify-center shadow-lg shadow-green-200">
+                <Award className="h-9 w-9" />
+              </div>
+              <div className="flex-1 space-y-1">
+                <h3 className="text-lg font-black text-green-900 leading-tight">
+                  Certificado de Origem
+                </h3>
+                <p className="text-xs font-bold text-green-700/60 uppercase tracking-widest">
+                  QR Code e Selo de Qualidade
+                </p>
+              </div>
+            </div>
+            
+            <p className="text-sm font-medium text-green-800/80 leading-relaxed">
+              Este ciclo foi concluído com sucesso. O certificado contém o QR Code para os consumidores verem toda a história deste alimento.
+            </p>
+
+            <Link to={`/ciclo/${batch.id}/certificado`}>
+              <Button
+                variant="primary"
+                className="w-full h-14 rounded-2xl bg-green-800 text-white shadow-xl shadow-green-900/20"
+              >
+                <Award className="h-5 w-5 mr-2" />
+                Ver e Imprimir Certificado
+              </Button>
+            </Link>
+          </Card>
+        </section>
+      )}
     </>
   );
 }
