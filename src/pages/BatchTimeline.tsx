@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../context/auth-context";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { RefreshCw } from "lucide-react";
@@ -37,6 +38,7 @@ export function BatchTimeline() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const isOnline = useIsOnline();
+  const { isAuthenticated } = useContext(AuthContext);
 
   const { data: batch, isLoading: isLoadingBatch } = useBatch(batchId);
   const { data: events, isLoading: isLoadingEvents } = useBatchEvents(batchId);
@@ -203,15 +205,17 @@ export function BatchTimeline() {
           frequency={(totalEvents / (daysActive || 1)).toFixed(1)}
         />
 
-        <BatchTimelineQuickActions
-          batchId={batchId}
-          currentPhase={currentPhase}
-          loadingAction={loadingAction}
-          onQuickAction={handleQuickAction}
-          onOpenPhaseModal={() => setIsPhaseModalOpen(true)}
-          onOpenObservationModal={() => setIsObservationModalOpen(true)}
-          onFinishBatch={(nextBatchId) => navigate(`/ciclo/${nextBatchId}/finalizar`)}
-        />
+        {isAuthenticated && (
+          <BatchTimelineQuickActions
+            batchId={batchId}
+            currentPhase={currentPhase}
+            loadingAction={loadingAction}
+            onQuickAction={handleQuickAction}
+            onOpenPhaseModal={() => setIsPhaseModalOpen(true)}
+            onOpenObservationModal={() => setIsObservationModalOpen(true)}
+            onFinishBatch={(nextBatchId) => navigate(`/ciclo/${nextBatchId}/finalizar`)}
+          />
+        )}
 
         <BatchTimelineEventList
           events={displayEvents}
@@ -220,10 +224,12 @@ export function BatchTimeline() {
           onToggleShowAll={() => setShowAllEvents((currentValue) => !currentValue)}
         />
 
-        <BatchTimelineDeleteAction
-          isDeleting={isDeleting}
-          onDelete={handleDeleteBatch}
-        />
+        {isAuthenticated && (
+          <BatchTimelineDeleteAction
+            isDeleting={isDeleting}
+            onDelete={handleDeleteBatch}
+          />
+        )}
       </div>
 
       <BatchTimelinePhaseModal

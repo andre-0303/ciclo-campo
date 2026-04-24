@@ -21,7 +21,7 @@ export function FinishBatch() {
     try {
       await finish(id!);
       toast("Ciclo concluído com sucesso!");
-      navigate("/");
+      navigate(`/ciclo/${id}/certificado`);
     } catch (err: any) {
       toast(err.message || "Erro ao finalizar ciclo", "error");
     }

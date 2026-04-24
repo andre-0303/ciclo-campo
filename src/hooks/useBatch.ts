@@ -17,6 +17,7 @@ export function useBatch(id: string) {
           class_name,
           status,
           created_at,
+          finished_at,
           qr_token,
           phases,
           plots (

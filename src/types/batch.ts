@@ -17,7 +17,7 @@ export interface BatchPlotDetail {
 export interface BatchDetail
   extends Pick<
     Tables<"batches">,
-    "id" | "crop_name" | "class_name" | "status" | "created_at" | "qr_token"
+    "id" | "crop_name" | "class_name" | "status" | "created_at" | "finished_at" | "qr_token"
   > {
   phases: BatchPhase[];
   plots: BatchPlotDetail | null;
@@ -38,7 +38,7 @@ export interface BatchEventRecord
 export interface BatchListItem
   extends Pick<
     Tables<"batches">,
-    "id" | "crop_name" | "class_name" | "status" | "created_at" | "qr_token"
+    "id" | "crop_name" | "class_name" | "status" | "created_at" | "finished_at" | "qr_token"
   > {
   phases: BatchPhase[];
   plots: Pick<Tables<"plots">, "id" | "label"> | null;

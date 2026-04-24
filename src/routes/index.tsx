@@ -7,6 +7,7 @@ import { CreatePlot } from "../pages/CreatePlot";
 import { BatchTimeline } from "../pages/BatchTimeline";
 import { FinishBatch } from "../pages/FinishBatch";
 import { BatchByToken } from "../pages/BatchByToken";
+import { CertificatePage } from "../pages/CertificatePage";
 
 export function AppRoutes() {
   return (
@@ -42,11 +43,7 @@ export function AppRoutes() {
 
         <Route
           path="/ciclo/:id"
-          element={
-            <PrivateRoute>
-              <BatchTimeline />
-            </PrivateRoute>
-          }
+          element={<BatchTimeline />}
         />
 
         <Route
@@ -60,9 +57,14 @@ export function AppRoutes() {
 
         <Route
           path="/ciclo/token/:token"
+          element={<BatchByToken />}
+        />
+
+        <Route
+          path="/ciclo/:id/certificado"
           element={
             <PrivateRoute>
-              <BatchByToken />
+              <CertificatePage />
             </PrivateRoute>
           }
         />
