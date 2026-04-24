@@ -10,7 +10,7 @@ export function BatchByToken() {
 
   useEffect(() => {
     if (data?.id) {
-      navigate(`/ciclo/${data.id}`)
+      navigate(`/ciclo/${data.id}/certificado`)
     }
   }, [data, navigate])
 

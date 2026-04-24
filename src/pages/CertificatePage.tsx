@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { AuthContext } from "../context/auth-context";
 import { useParams, useNavigate } from 'react-router-dom';
 import { Certificate } from '../components/Certificate';
 import { useBatch } from '../hooks/useBatch';
@@ -9,6 +11,7 @@ import { CertificateData } from '../types/certificate';
 export function CertificatePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthContext);
   const { data: batch, isLoading: isLoadingBatch } = useBatch(id!);
   const { data: events, isLoading: isLoadingEvents } = useBatchEvents(id!);
 
@@ -55,7 +58,7 @@ export function CertificatePage() {
       <div className="no-print">
         <PageHeader 
           title="Certificado de Origem" 
-          onBack={() => navigate(`/ciclo/${id}`)} 
+          onBack={() => isAuthenticated ? navigate(`/ciclo/${id}`) : navigate(`/ciclo/${id}`)} 
         />
       </div>
 
@@ -64,25 +67,35 @@ export function CertificatePage() {
           <Certificate data={certificateData} />
         </div>
 
-        <div className="no-print flex gap-4">
-          <Button
-            variant="secondary"
-            onClick={() => navigate(`/ciclo/${id}`)}
-            className="rounded-2xl px-6"
-          >
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Voltar ao Ciclo
-          </Button>
+        {isAuthenticated && (
+          <div className="no-print flex gap-4">
+            <Button
+              variant="secondary"
+              onClick={() => navigate(`/ciclo/${id}`)}
+              className="rounded-2xl px-6"
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Voltar ao Ciclo
+            </Button>
 
-          <Button
-            variant="primary"
-            onClick={() => window.print()}
-            className="rounded-2xl px-8 shadow-xl shadow-primary/20"
-          >
-            <Printer className="h-4 w-4 mr-2" />
-            Imprimir Certificado
-          </Button>
-        </div>
+            <Button
+              variant="primary"
+              onClick={() => window.print()}
+              className="rounded-2xl px-8 shadow-xl shadow-primary/20"
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Imprimir Certificado
+            </Button>
+          </div>
+        )}
+
+        {!isAuthenticated && (
+           <div className="no-print">
+              <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">
+                Visualização de Origem Garantida pelo CicloCampo
+              </p>
+           </div>
+        )}
       </div>
     </div>
   );

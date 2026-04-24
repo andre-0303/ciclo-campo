@@ -62,11 +62,7 @@ export function AppRoutes() {
 
         <Route
           path="/ciclo/:id/certificado"
-          element={
-            <PrivateRoute>
-              <CertificatePage />
-            </PrivateRoute>
-          }
+          element={<CertificatePage />}
         />
       </Routes>
     </BrowserRouter>
